@@ -18,7 +18,7 @@ export default function RFQ() {
   const labelStyle: React.CSSProperties = { fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", fontWeight: 600, marginBottom: "0.4rem", display: "block" };
 
   const next = () => {
-    if (step === 0 && (!company.companyName || !company.contactPerson || !company.email)) {
+    if (step === 0 && (!company.companyName || !company.contactPerson || !company.email || !company.phone)) {
       alert("Please fill all required company details (*).");
       return;
     }
@@ -81,7 +81,7 @@ export default function RFQ() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                     <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "0.5rem" }}>Company Details</h3>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-                      {[{ k: "companyName", l: "Company Name *", p: "Acme Corp", t: "text", req: true }, { k: "contactPerson", l: "Contact Person *", p: "Jane Smith", t: "text", req: true }, { k: "email", l: "Email *", p: "jane@company.com", t: "email", req: true }, { k: "phone", l: "Phone", p: "+91 XXXXX XXXXX", t: "tel", req: false }].map(({ k, l, p, t, req }) => (
+                      {[{ k: "companyName", l: "Company Name *", p: "Acme Corp", t: "text", req: true }, { k: "contactPerson", l: "Contact Person *", p: "Jane Smith", t: "text", req: true }, { k: "email", l: "Email *", p: "jane@company.com", t: "email", req: true }, { k: "phone", l: "Phone *", p: "+91 XXXXX XXXXX", t: "tel", req: true }].map(({ k, l, p, t, req }) => (
                         <div key={k}><label style={labelStyle}>{l}</label><input type={t} required={req} value={(company as any)[k]} onChange={e => setCompany({ ...company, [k]: e.target.value })} placeholder={p} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                       ))}
                     </div>

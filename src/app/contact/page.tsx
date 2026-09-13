@@ -65,12 +65,12 @@ export default function Contact() {
             ) : (
               <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-                  {[{ key: "name", label: "Full Name *", type: "text", placeholder: "John Doe", required: true }, { key: "company", label: "Company", type: "text", placeholder: "OEM Ltd" }].map(f => (
+                  {[{ key: "name", label: "Full Name *", type: "text", placeholder: "John Doe", required: true }, { key: "company", label: "Company *", type: "text", placeholder: "OEM Ltd", required: true }].map(f => (
                     <div key={f.key}><label style={labelStyle}>{f.label}</label><input type={f.type} required={f.required} value={(form as any)[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.placeholder} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                   ))}
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-                  {[{ key: "email", label: "Email *", type: "email", placeholder: "john@company.com", required: true }, { key: "phone", label: "Phone", type: "tel", placeholder: "+91 XXXXX XXXXX" }].map(f => (
+                  {[{ key: "email", label: "Email *", type: "email", placeholder: "john@company.com", required: true }, { key: "phone", label: "Phone *", type: "tel", placeholder: "+91 XXXXX XXXXX", required: true }].map(f => (
                     <div key={f.key}><label style={labelStyle}>{f.label}</label><input type={f.type} required={f.required} value={(form as any)[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.placeholder} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                   ))}
                 </div>
