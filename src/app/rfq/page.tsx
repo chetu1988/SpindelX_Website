@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { BRAND } from "@/lib/constants";
-import { Upload, CheckCircle, FileText, ArrowRight, ArrowLeft, Send, Plus, Trash2 } from "lucide-react";
+import { CheckCircle, FileText, ArrowRight, ArrowLeft, Send, Plus, Trash2 } from "lucide-react";
 
 const STEPS = ["Company Info", "Part Specs", "Review & Submit"];
 
@@ -18,17 +18,13 @@ interface Part {
   surfaceFinish: string;
   deliveryDate: string;
   notes: string;
-  file: File | null;
-  fileUrl: string;
-  uploading: boolean;
-  uploadPct: number;
 }
 
 export default function RFQ() {
   const [step, setStep] = useState(0);
   const [company, setCompany] = useState({ companyName: "", contactPerson: "", email: "", phone: "" });
   const [parts, setParts] = useState<Part[]>([{
-    id: "1", partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "", file: null, fileUrl: "", uploading: false, uploadPct: 0
+    id: "1", partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: ""
   }]);
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
@@ -36,39 +32,15 @@ export default function RFQ() {
   const labelStyle: React.CSSProperties = { fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", fontWeight: 600, marginBottom: "0.4rem", display: "block" };
 
   const addPart = () => {
-    setParts([...parts, { id: Math.random().toString(36).substring(7), partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "", file: null, fileUrl: "", uploading: false, uploadPct: 0 }]);
+    setParts([...parts, { id: Math.random().toString(36).substring(7), partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "" }]);
   };
 
   const removePart = (id: string) => {
     if (parts.length > 1) setParts(parts.filter(p => p.id !== id));
   };
 
-  const updatePart = (id: string, key: keyof Part, value: any) => {
+  const updatePart = (id: string, key: keyof Part, value: string) => {
     setParts(parts.map(p => p.id === id ? { ...p, [key]: value } : p));
-  };
-
-  const handleFileUpload = async (id: string, file: File) => {
-    updatePart(id, "file", file);
-    updatePart(id, "uploading", true);
-    updatePart(id, "uploadPct", 10);
-    const timer = setInterval(() => {
-      setParts(curr => curr.map(p => p.id === id ? { ...p, uploadPct: p.uploadPct >= 90 ? 90 : p.uploadPct + 20 } : p));
-    }, 300);
-    
-    try {
-      const fd = new FormData(); fd.append("file", file);
-      const r = await fetch("/api/rfq/upload", { method: "POST", body: fd });
-      clearInterval(timer);
-      updatePart(id, "uploadPct", 100);
-      const data = r.ok ? await r.json() : {};
-      updatePart(id, "fileUrl", data.url || `/uploads/${file.name}`);
-    } catch { 
-      clearInterval(timer); 
-      updatePart(id, "uploadPct", 100); 
-      updatePart(id, "fileUrl", `/uploads/${file.name}`); 
-    } finally { 
-      setTimeout(() => updatePart(id, "uploading", false), 400); 
-    }
   };
 
   const next = () => setStep(s => Math.min(s + 1, 2));
@@ -86,14 +58,17 @@ export default function RFQ() {
         surfaceFinish: p.surfaceFinish,
         deliveryDate: p.deliveryDate,
         notes: p.notes,
-        fileName: p.file?.name || "None",
-        fileUrl: p.fileUrl || "None"
       }));
 
-      const r = await fetch("/api/rfq/submit", { 
+      const r = await fetch("https://api.web3forms.com/submit", { 
         method: "POST", 
-        headers: { "Content-Type": "application/json" }, 
-        body: JSON.stringify({ company, parts: partsPayload, to: BRAND.email }) 
+        headers: { "Content-Type": "application/json", "Accept": "application/json" }, 
+        body: JSON.stringify({ 
+          access_key: "85df0e33-1af2-4583-b321-cb1155452fc8",
+          subject: "New SpindelX RFQ Submission",
+          company, 
+          parts: partsPayload 
+        }) 
       });
       setStatus(r.ok ? "success" : "error");
     } catch { setStatus("error"); }
@@ -108,7 +83,6 @@ export default function RFQ() {
           Instant <span style={{ color: "#FFBF00" }}>RFQ</span>
         </h1>
 
-        {/* Step indicators */}
         <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", marginBottom: "3rem" }}>
           {STEPS.map((s, i) => (
             <div key={s} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.4rem" }}>
@@ -124,8 +98,8 @@ export default function RFQ() {
               <div style={{ textAlign: "center", padding: "3rem 0" }}>
                 <CheckCircle size={48} style={{ color: "#00FF66", margin: "0 auto 1.25rem" }} />
                 <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "1.1rem", textTransform: "uppercase", color: "#fff", marginBottom: "0.75rem" }}>RFQ Dispatched</h3>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.75rem", maxWidth: 360, margin: "0 auto 1.5rem" }}>Your CAD drawings and specs have been routed to {BRAND.email}. An engineer will respond within 24 hours.</p>
-                <button onClick={() => { setStep(0); setStatus("idle"); setParts([{ id: "1", partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "", file: null, fileUrl: "", uploading: false, uploadPct: 0 }]); }} className="btn-primary" style={{ fontSize: "0.7rem" }}>SUBMIT NEW RFQ</button>
+                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.75rem", maxWidth: 360, margin: "0 auto 1.5rem" }}>Your specs have been routed to {BRAND.email}. An engineer will respond within 24 hours.</p>
+                <button onClick={() => { setStep(0); setStatus("idle"); setParts([{ id: "1", partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "" }]); }} className="btn-primary" style={{ fontSize: "0.7rem" }}>SUBMIT NEW RFQ</button>
               </div>
             ) : (
               <>
@@ -173,22 +147,6 @@ export default function RFQ() {
                           <div><label style={labelStyle}>Delivery Date</label><input type="date" value={p.deliveryDate} onChange={e => updatePart(p.id, "deliveryDate", e.target.value)} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                         </div>
 
-                        {/* Upload */}
-                        <div style={{ marginTop: "0.5rem" }}>
-                          <label style={labelStyle}>CAD Drawing / PDF *</label>
-                          <div style={{ position: "relative", border: "2px dashed rgba(255,255,255,0.12)", borderRadius: 12, padding: "1.5rem", textAlign: "center", background: "rgba(255,255,255,0.02)", transition: "all 0.3s", cursor: "pointer" }}
-                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,191,0,0.4)"}
-                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.12)"}>
-                            <input type="file" accept=".dxf,.step,.stp,.iges,.igs,.pdf,.zip" onChange={e => { const file = e.target.files?.[0]; if (file) handleFileUpload(p.id, file); }} style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }} />
-                            <Upload size={20} style={{ color: "#FFBF00", margin: "0 auto 0.5rem" }} />
-                            <p style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.7)", fontFamily: "var(--font-inter)" }}>{p.file ? p.file.name : "DRAG & DROP OR CLICK TO BROWSE"}</p>
-                          </div>
-                          {p.uploading && (
-                            <div style={{ marginTop: "0.75rem" }}><div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(255,255,255,0.4)", marginBottom: "0.4rem" }}><span>UPLOADING...</span><span>{p.uploadPct}%</span></div><div style={{ height: 2, background: "rgba(255,255,255,0.1)", borderRadius: 1 }}><div style={{ height: "100%", background: "#FFBF00", width: `${p.uploadPct}%`, transition: "width 0.2s" }} /></div></div>
-                          )}
-                          {p.fileUrl && !p.uploading && <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", background: "rgba(0,255,102,0.05)", border: "1px solid rgba(0,255,102,0.2)", borderRadius: 6, fontSize: "0.65rem", color: "rgba(0,255,102,0.9)", fontFamily: "var(--font-inter)", marginTop: "0.75rem" }}><CheckCircle size={12} style={{ color: "#00FF66" }} /> File attached successfully</div>}
-                        </div>
-
                         {/* Notes */}
                         <div><label style={labelStyle}>Notes / Special Instructions</label><textarea rows={2} value={p.notes} onChange={e => updatePart(p.id, "notes", e.target.value)} placeholder="Tolerances, assembly notes..." style={{ ...inputStyle, resize: "none" }} onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                       </div>
@@ -214,7 +172,7 @@ export default function RFQ() {
                       <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "1rem" }}>Parts ({parts.length})</h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                         {parts.map((p, i) => (
-                          <div key={p.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "1rem", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+                          <div key={p.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "1rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                             <div>
                               <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>PART {i + 1}</span>
                               <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{p.partNumber || "N/A"}</span>
@@ -223,12 +181,6 @@ export default function RFQ() {
                             <div>
                               <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>SPECS</span>
                               <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{p.quantity} pcs | {p.material} ({p.thickness}mm)</span>
-                            </div>
-                            <div>
-                              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>FILE</span>
-                              <span style={{ color: p.fileUrl ? "#00FF66" : "rgba(255,107,107,0.8)", fontWeight: 600, fontSize: "0.7rem", display: "flex", alignItems: "center", gap: "0.3rem" }}>
-                                {p.fileUrl ? <><CheckCircle size={10} /> {p.file?.name}</> : "Missing File"}
-                              </span>
                             </div>
                           </div>
                         ))}

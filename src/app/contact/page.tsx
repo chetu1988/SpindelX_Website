@@ -14,7 +14,11 @@ export default function Contact() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setStatus("submitting");
     try {
-      const r = await fetch("/api/rfq/submit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, subject: "Contact Form", to: BRAND.email }) });
+      const r = await fetch("https://api.web3forms.com/submit", { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json", "Accept": "application/json" }, 
+        body: JSON.stringify({ ...form, subject: "SpindelX Contact Form", access_key: "85df0e33-1af2-4583-b321-cb1155452fc8" }) 
+      });
       setStatus(r.ok ? "success" : "error");
       if (r.ok) setForm({ name: "", company: "", email: "", phone: "", message: "" });
     } catch { setStatus("error"); }

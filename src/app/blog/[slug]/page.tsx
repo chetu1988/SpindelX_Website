@@ -1,8 +1,5 @@
-"use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { GlassCard } from "@/components/ui/GlassCard";
 
 const POSTS: Record<string, { title: string; date: string; read: string; cat: string; content: string }> = {
   "design-engineers-guide-sheet-metal-bending": {
@@ -83,6 +80,12 @@ A single material substitution — MS HR instead of IS 2062 Grade E250 — can c
   },
 };
 
+export function generateStaticParams() {
+  return Object.keys(POSTS).map((slug) => ({
+    slug: slug,
+  }));
+}
+
 export default function BlogPost({ params }: { params: { slug: string } }) {
   const post = POSTS[params.slug];
   if (!post) return (
@@ -100,12 +103,10 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     <div style={{ background: "#1F3855", color: "#fff", minHeight: "100vh", paddingTop: "8rem", paddingBottom: "5rem", position: "relative", overflow: "hidden" }}>
       <div className="blueprint-bg-lg" style={{ position: "absolute", inset: 0, opacity: 0.25, pointerEvents: "none" }} />
       <div className="container-xl" style={{ position: "relative", zIndex: 1, maxWidth: 780 }}>
-        <Link href="/blog" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontFamily: "var(--font-inter)", fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "2.5rem", transition: "color 0.3s" }}
-          onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#FFBF00"}
-          onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.4)"}>
+        <Link href="/blog" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", fontFamily: "var(--font-inter)", fontSize: "0.65rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: "2.5rem", transition: "color 0.3s" }}>
           <ArrowLeft size={12} /> BACK TO JOURNAL
         </Link>
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
+        <div>
           <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#FFBF00", fontWeight: 600, display: "block", marginBottom: "1rem" }}>{post.cat} — {post.date} · {post.read} read</span>
           <h1 style={{ fontFamily: "var(--font-manrope)", fontWeight: 800, fontSize: "clamp(1.5rem, 4vw, 2.75rem)", textTransform: "uppercase", color: "#fff", lineHeight: 1.15, marginBottom: "3rem" }}>{post.title}</h1>
           <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "2.5rem" }}>
@@ -126,7 +127,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
             <p style={{ color: "rgba(255,255,255,0.6)", fontFamily: "var(--font-inter)", fontSize: "0.75rem", marginBottom: "1rem" }}>Get precision manufacturing feedback from our engineers — free with every RFQ.</p>
             <Link href="/rfq" className="btn-primary" style={{ display: "inline-flex", fontSize: "0.65rem" }}>REQUEST A QUOTE</Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
