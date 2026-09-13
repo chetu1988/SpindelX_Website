@@ -105,13 +105,10 @@ export function Footer() {
         </div>
 
         <div style={{ height: 1, background: "rgba(255,255,255,0.05)", marginBottom: "1.5rem" }} />
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-          <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.78rem", fontFamily: "var(--font-inter)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: "1rem" }}>
+          <span style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.78rem", fontFamily: "var(--font-inter)", textAlign: "center" }}>
             © {yr} SpindelX. All rights reserved. Made with precision in Mysore, Karnataka, India.
           </span>
-          <Link href="/rfq">
-            <button className="btn-primary" style={{ padding: "0.6rem 1.4rem", fontSize: "0.75rem" }}>REQUEST QUOTE</button>
-          </Link>
         </div>
       </div>
     </footer>
