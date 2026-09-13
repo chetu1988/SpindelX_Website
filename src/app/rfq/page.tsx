@@ -17,7 +17,17 @@ export default function RFQ() {
   const inputStyle: React.CSSProperties = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "0.75rem 1rem", fontSize: "0.75rem", color: "#fff", outline: "none", width: "100%", fontFamily: "var(--font-inter)", transition: "border-color 0.3s" };
   const labelStyle: React.CSSProperties = { fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", fontWeight: 600, marginBottom: "0.4rem", display: "block" };
 
-  const next = () => setStep(s => Math.min(s + 1, 2));
+  const next = () => {
+    if (step === 0 && (!company.companyName || !company.contactPerson || !company.email)) {
+      alert("Please fill all required company details (*).");
+      return;
+    }
+    if (step === 1 && !project.description) {
+      alert("Please provide detailed requirements (*).");
+      return;
+    }
+    setStep(s => Math.min(s + 1, 2));
+  };
   const back = () => setStep(s => Math.max(s - 1, 0));
 
   const submit = async () => {
