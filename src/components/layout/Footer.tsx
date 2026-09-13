@@ -88,7 +88,7 @@ export function Footer() {
             <h4 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#FFBF00", marginBottom: "1.25rem" }}>CONTACT</h4>
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {[
-                { Icon: MapPin, text: `${BRAND.address.city}, ${BRAND.address.state}, India`, href: null },
+                { Icon: MapPin, text: `${BRAND.address.street}, ${BRAND.address.city}, ${BRAND.address.state} ${BRAND.address.country}`, href: null },
                 { Icon: Mail, text: BRAND.email, href: `mailto:${BRAND.email}` },
                 { Icon: Phone, text: BRAND.phone, href: `tel:${BRAND.phone}` },
               ].map(({ Icon, text, href }) => (
