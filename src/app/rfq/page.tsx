@@ -4,44 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { SectionReveal } from "@/components/ui/SectionReveal";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { BRAND } from "@/lib/constants";
-import { CheckCircle, FileText, ArrowRight, ArrowLeft, Send, Plus, Trash2 } from "lucide-react";
+import { CheckCircle, ArrowRight, ArrowLeft, Send } from "lucide-react";
 
-const STEPS = ["Company Info", "Part Specs", "Review & Submit"];
-
-interface Part {
-  id: string;
-  partNumber: string;
-  partName: string;
-  material: string;
-  thickness: string;
-  quantity: string;
-  surfaceFinish: string;
-  deliveryDate: string;
-  notes: string;
-}
+const STEPS = ["Company Info", "Project Details", "Review & Submit"];
 
 export default function RFQ() {
   const [step, setStep] = useState(0);
   const [company, setCompany] = useState({ companyName: "", contactPerson: "", email: "", phone: "" });
-  const [parts, setParts] = useState<Part[]>([{
-    id: "1", partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: ""
-  }]);
+  const [project, setProject] = useState({ projectName: "", description: "", estimatedQuantity: "", deliveryDate: "" });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
 
   const inputStyle: React.CSSProperties = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "0.75rem 1rem", fontSize: "0.75rem", color: "#fff", outline: "none", width: "100%", fontFamily: "var(--font-inter)", transition: "border-color 0.3s" };
   const labelStyle: React.CSSProperties = { fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", fontWeight: 600, marginBottom: "0.4rem", display: "block" };
-
-  const addPart = () => {
-    setParts([...parts, { id: Math.random().toString(36).substring(7), partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "" }]);
-  };
-
-  const removePart = (id: string) => {
-    if (parts.length > 1) setParts(parts.filter(p => p.id !== id));
-  };
-
-  const updatePart = (id: string, key: keyof Part, value: string) => {
-    setParts(parts.map(p => p.id === id ? { ...p, [key]: value } : p));
-  };
 
   const next = () => setStep(s => Math.min(s + 1, 2));
   const back = () => setStep(s => Math.max(s - 1, 0));
@@ -49,17 +23,6 @@ export default function RFQ() {
   const submit = async () => {
     setStatus("submitting");
     try {
-      const partsPayload = parts.map(p => ({
-        partNumber: p.partNumber || "N/A",
-        partName: p.partName || "N/A",
-        material: p.material,
-        thickness: p.thickness,
-        quantity: p.quantity,
-        surfaceFinish: p.surfaceFinish,
-        deliveryDate: p.deliveryDate,
-        notes: p.notes,
-      }));
-
       const r = await fetch("https://api.web3forms.com/submit", { 
         method: "POST", 
         headers: { "Content-Type": "application/json", "Accept": "application/json" }, 
@@ -67,7 +30,7 @@ export default function RFQ() {
           access_key: "85df0e33-1af2-4583-b321-cb1155452fc8",
           subject: "New SpindelX RFQ Submission",
           company, 
-          parts: partsPayload 
+          project 
         }) 
       });
       setStatus(r.ok ? "success" : "error");
@@ -98,8 +61,8 @@ export default function RFQ() {
               <div style={{ textAlign: "center", padding: "3rem 0" }}>
                 <CheckCircle size={48} style={{ color: "#00FF66", margin: "0 auto 1.25rem" }} />
                 <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "1.1rem", textTransform: "uppercase", color: "#fff", marginBottom: "0.75rem" }}>RFQ Dispatched</h3>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.75rem", maxWidth: 360, margin: "0 auto 1.5rem" }}>Your specs have been routed to {BRAND.email}. An engineer will respond within 24 hours.</p>
-                <button onClick={() => { setStep(0); setStatus("idle"); setParts([{ id: "1", partNumber: "", partName: "", material: "MS", thickness: "2.0", quantity: "50", surfaceFinish: "Raw", deliveryDate: "", notes: "" }]); }} className="btn-primary" style={{ fontSize: "0.7rem" }}>SUBMIT NEW RFQ</button>
+                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.75rem", maxWidth: 360, margin: "0 auto 1.5rem" }}>Your inquiry has been routed to {BRAND.email}. An engineer will respond within 24 hours.</p>
+                <button onClick={() => { setStep(0); setStatus("idle"); setProject({ projectName: "", description: "", estimatedQuantity: "", deliveryDate: "" }); }} className="btn-primary" style={{ fontSize: "0.7rem" }}>SUBMIT NEW RFQ</button>
               </div>
             ) : (
               <>
@@ -114,47 +77,22 @@ export default function RFQ() {
                     </div>
                   </div>
                 )}
-                {/* Step 1: Part Specs */}
+                {/* Step 1: Project Details */}
                 {step === 1 && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-                    {parts.map((p, index) => (
-                      <div key={p.id} style={{ display: "flex", flexDirection: "column", gap: "1.25rem", background: "rgba(0,0,0,0.15)", padding: "1.5rem", borderRadius: 12, border: "1px solid rgba(255,255,255,0.05)" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "0.5rem" }}>
-                          <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", margin: 0 }}>Part {index + 1}</h3>
-                          {parts.length > 1 && (
-                            <button onClick={() => removePart(p.id)} style={{ background: "none", border: "none", color: "rgba(255,107,107,0.8)", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.7rem", fontFamily: "var(--font-inter)", textTransform: "uppercase" }}>
-                              <Trash2 size={12} /> Remove
-                            </button>
-                          )}
-                        </div>
-                        
-                        {/* Identity */}
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-                          <div><label style={labelStyle}>Part Number *</label><input type="text" required value={p.partNumber} onChange={e => updatePart(p.id, "partNumber", e.target.value)} placeholder="e.g. SPX-1045" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                          <div><label style={labelStyle}>Part Name</label><input type="text" value={p.partName} onChange={e => updatePart(p.id, "partName", e.target.value)} placeholder="e.g. Mounting Bracket" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                        </div>
-
-                        {/* Specs */}
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1.25rem" }}>
-                          <div><label style={labelStyle}>Material *</label><select value={p.material} onChange={e => updatePart(p.id, "material", e.target.value)} style={{ ...inputStyle, background: "#1F3855" }}><option value="MS">Mild Steel (MS)</option><option value="SS">Stainless Steel (SS)</option><option value="AL">Aluminium</option></select></div>
-                          <div><label style={labelStyle}>Thickness (mm) *</label><input type="text" required value={p.thickness} onChange={e => updatePart(p.id, "thickness", e.target.value)} placeholder="2.0" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                          <div><label style={labelStyle}>Quantity *</label><input type="number" required value={p.quantity} onChange={e => updatePart(p.id, "quantity", e.target.value)} placeholder="50" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                        </div>
-
-                        {/* Finishes */}
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-                          <div><label style={labelStyle}>Surface Finish</label><input type="text" value={p.surfaceFinish} onChange={e => updatePart(p.id, "surfaceFinish", e.target.value)} placeholder="e.g. Powder Coated RAL 9005" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                          <div><label style={labelStyle}>Delivery Date</label><input type="date" value={p.deliveryDate} onChange={e => updatePart(p.id, "deliveryDate", e.target.value)} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                        </div>
-
-                        {/* Notes */}
-                        <div><label style={labelStyle}>Notes / Special Instructions</label><textarea rows={2} value={p.notes} onChange={e => updatePart(p.id, "notes", e.target.value)} placeholder="Tolerances, assembly notes..." style={{ ...inputStyle, resize: "none" }} onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
-                      </div>
-                    ))}
-
-                    <button onClick={addPart} className="btn-outline" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", width: "100%", padding: "1rem", borderRadius: 12, borderStyle: "dashed" }}>
-                      <Plus size={16} /> ADD ANOTHER PART
-                    </button>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                    <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "0.5rem" }}>Project Requirements</h3>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                      <div><label style={labelStyle}>Project / Part Name</label><input type="text" value={project.projectName} onChange={e => setProject({ ...project, projectName: e.target.value })} placeholder="e.g. Enclosure Batch" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
+                      <div><label style={labelStyle}>Estimated Quantity</label><input type="text" value={project.estimatedQuantity} onChange={e => setProject({ ...project, estimatedQuantity: e.target.value })} placeholder="e.g. 50-100 pcs" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Detailed Requirements / Description *</label>
+                      <textarea required rows={4} value={project.description} onChange={e => setProject({ ...project, description: e.target.value })} placeholder="Describe the materials, thickness, surface finishes, or any assembly notes here. We will reach out for CAD drawings (DXF/STEP) once we review your requirements." style={{ ...inputStyle, resize: "none" }} onFocus={e => (e.target as HTMLTextAreaElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLTextAreaElement).style.borderColor = "rgba(255,255,255,0.1)"} />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Target Delivery Date</label>
+                      <input type="date" value={project.deliveryDate} onChange={e => setProject({ ...project, deliveryDate: e.target.value })} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} />
+                    </div>
                   </div>
                 )}
                 {/* Step 2: Review */}
@@ -163,27 +101,32 @@ export default function RFQ() {
                     <div>
                       <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "1rem" }}>Company Review</h3>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", fontSize: "0.75rem" }}>
-                        {[["COMPANY", company.companyName], ["CONTACT", company.contactPerson], ["EMAIL", company.email]].map(([k, v]) => (
+                        {[["COMPANY", company.companyName], ["CONTACT", company.contactPerson], ["EMAIL", company.email], ["PHONE", company.phone || "N/A"]].map(([k, v]) => (
                           <div key={k}><span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>{k}</span><span style={{ color: "#fff", fontWeight: 600 }}>{v}</span></div>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "1rem" }}>Parts ({parts.length})</h3>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                        {parts.map((p, i) => (
-                          <div key={p.id} style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "1rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                            <div>
-                              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>PART {i + 1}</span>
-                              <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{p.partNumber || "N/A"}</span>
-                              <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.7rem", display: "block" }}>{p.partName || "Unnamed"}</span>
-                            </div>
-                            <div>
-                              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>SPECS</span>
-                              <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{p.quantity} pcs | {p.material} ({p.thickness}mm)</span>
-                            </div>
+                      <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "1rem" }}>Project Overview</h3>
+                      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "1rem", display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+                        <div>
+                          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>PROJECT NAME</span>
+                          <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{project.projectName || "N/A"}</span>
+                        </div>
+                        <div>
+                          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>DESCRIPTION</span>
+                          <span style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.75rem", display: "block", whiteSpace: "pre-wrap" }}>{project.description || "N/A"}</span>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                          <div>
+                            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>ESTIMATED QUANTITY</span>
+                            <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{project.estimatedQuantity || "N/A"}</span>
                           </div>
-                        ))}
+                          <div>
+                            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>DELIVERY DATE</span>
+                            <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{project.deliveryDate || "Flexible"}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
