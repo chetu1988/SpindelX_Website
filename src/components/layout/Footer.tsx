@@ -30,11 +30,8 @@ export function Footer() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "3rem", marginBottom: "3rem" }}>
           {/* Brand */}
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(255,191,0,0.1)", border: "1px solid rgba(255,191,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontFamily: "var(--font-manrope)", fontWeight: 800, color: "#FFBF00", fontSize: "1.1rem" }}>S</span>
-              </div>
-              <span style={{ fontFamily: "var(--font-manrope)", fontWeight: 800, letterSpacing: "0.1em", color: "#fff", fontSize: "1rem" }}>SPINDEL<span style={{ color: "#FFBF00" }}>X</span></span>
+            <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+              <img src="/images/logo.png" alt="SpindelX" style={{ height: "45px", width: "auto", objectFit: "contain" }} />
             </Link>
             <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem", lineHeight: 1.7, maxWidth: 240 }}>{BRAND.tagline}</p>
             <div style={{ display: "flex", gap: "0.75rem" }}>

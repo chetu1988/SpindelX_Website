@@ -34,13 +34,8 @@ export function Navbar() {
       <motion.nav style={navStyle} initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
       <div className="container-xl flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(255,191,0,0.1)", border: "1px solid rgba(255,191,0,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span style={{ fontFamily: "var(--font-manrope)", fontWeight: 800, color: "#FFBF00", fontSize: "1.1rem" }}>S</span>
-          </div>
-          <span style={{ fontFamily: "var(--font-manrope)", fontWeight: 800, letterSpacing: "0.1em", color: "#fff", fontSize: "1rem" }}>
-            SPINDEL<span style={{ color: "#FFBF00" }}>X</span>
-          </span>
+        <Link href="/" className="flex items-center group">
+          <img src="/images/logo.png" alt="SpindelX" style={{ height: "45px", width: "auto", objectFit: "contain" }} />
         </Link>
 
         {/* Desktop links */}
