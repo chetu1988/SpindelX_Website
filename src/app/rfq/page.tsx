@@ -80,7 +80,7 @@ export default function RFQ() {
                 {step === 0 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                     <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "0.5rem" }}>Company Details</h3>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       {[{ k: "companyName", l: "Company Name *", p: "Acme Corp", t: "text", req: true }, { k: "contactPerson", l: "Contact Person *", p: "Jane Smith", t: "text", req: true }, { k: "email", l: "Email *", p: "jane@company.com", t: "email", req: true }, { k: "phone", l: "Phone *", p: "+91 XXXXX XXXXX", t: "tel", req: true }].map(({ k, l, p, t, req }) => (
                         <div key={k}><label style={labelStyle}>{l}</label><input type={t} required={req} value={(company as any)[k]} onChange={e => setCompany({ ...company, [k]: e.target.value })} placeholder={p} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                       ))}
@@ -91,7 +91,7 @@ export default function RFQ() {
                 {step === 1 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                     <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "0.5rem" }}>Project Requirements</h3>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div><label style={labelStyle}>Project / Part Name</label><input type="text" value={project.projectName} onChange={e => setProject({ ...project, projectName: e.target.value })} placeholder="e.g. Enclosure Batch" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                       <div><label style={labelStyle}>Estimated Quantity</label><input type="text" value={project.estimatedQuantity} onChange={e => setProject({ ...project, estimatedQuantity: e.target.value })} placeholder="e.g. 50-100 pcs" style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                     </div>
@@ -110,7 +110,7 @@ export default function RFQ() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
                     <div>
                       <h3 style={{ fontFamily: "var(--font-manrope)", fontWeight: 700, fontSize: "0.9rem", color: "#FFBF00", textTransform: "uppercase", borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: "0.75rem", marginBottom: "1rem" }}>Company Review</h3>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", fontSize: "0.75rem" }}>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                         {[["COMPANY", company.companyName], ["CONTACT", company.contactPerson], ["EMAIL", company.email], ["PHONE", company.phone || "N/A"]].map(([k, v]) => (
                           <div key={k}><span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>{k}</span><span style={{ color: "#fff", fontWeight: 600 }}>{v}</span></div>
                         ))}
@@ -127,7 +127,7 @@ export default function RFQ() {
                           <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>DESCRIPTION</span>
                           <span style={{ color: "rgba(255,255,255,0.8)", fontSize: "0.75rem", display: "block", whiteSpace: "pre-wrap" }}>{project.description || "N/A"}</span>
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", display: "block", marginBottom: "0.2rem" }}>ESTIMATED QUANTITY</span>
                             <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.75rem", display: "block" }}>{project.estimatedQuantity || "N/A"}</span>

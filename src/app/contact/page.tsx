@@ -30,8 +30,8 @@ export default function Contact() {
   return (
     <div style={{ background: "#1F3855", color: "#fff", minHeight: "100vh", paddingTop: "8rem", paddingBottom: "5rem", position: "relative", overflow: "hidden" }}>
       <div className="blueprint-bg-lg" style={{ position: "absolute", inset: 0, opacity: 0.2, pointerEvents: "none" }} />
-      <div className="container-xl" style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "5fr 7fr", gap: "5rem", alignItems: "start" }}>
-        <div>
+      <div className="container-xl grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start relative z-10">
+        <div className="lg:col-span-5">
           <span className="section-tag">CONTACT US</span>
           <h1 style={{ fontFamily: "var(--font-manrope)", fontWeight: 800, fontSize: "clamp(2rem, 4vw, 3.5rem)", textTransform: "uppercase", color: "#fff", lineHeight: 1.05, marginBottom: "1.5rem" }}>
             Talk to an <span style={{ color: "#FFBF00" }}>Engineer</span>
@@ -53,7 +53,7 @@ export default function Contact() {
             <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>Response SLA: Under 24 Business Hours</span>
           </div>
         </div>
-        <SectionReveal>
+        <SectionReveal className="lg:col-span-7 w-full">
           <GlassCard disableTilt={true} style={{ padding: "2.5rem", background: "rgba(255,255,255,0.04)" }}>
             {status === "success" ? (
               <div style={{ textAlign: "center", padding: "3rem 0" }}>
@@ -64,12 +64,12 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[{ key: "name", label: "Full Name *", type: "text", placeholder: "John Doe", required: true }, { key: "company", label: "Company *", type: "text", placeholder: "OEM Ltd", required: true }].map(f => (
                     <div key={f.key}><label style={labelStyle}>{f.label}</label><input type={f.type} required={f.required} value={(form as any)[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.placeholder} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                   ))}
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {[{ key: "email", label: "Email *", type: "email", placeholder: "john@company.com", required: true }, { key: "phone", label: "Phone *", type: "tel", placeholder: "+91 XXXXX XXXXX", required: true }].map(f => (
                     <div key={f.key}><label style={labelStyle}>{f.label}</label><input type={f.type} required={f.required} value={(form as any)[f.key]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.placeholder} style={inputStyle} onFocus={e => (e.target as HTMLInputElement).style.borderColor = "#FFBF00"} onBlur={e => (e.target as HTMLInputElement).style.borderColor = "rgba(255,255,255,0.1)"} /></div>
                   ))}
