@@ -23,12 +23,12 @@ export function CTABanner() {
             <Link href="/rfq"><MagneticButton><button className="btn-primary" style={{ padding: "0.85rem 2.5rem", fontSize: "0.8rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>REQUEST QUOTE <ArrowUpRight size={16} /></button></MagneticButton></Link>
             <Link href="/contact"><button className="btn-outline" style={{ padding: "0.85rem 2.5rem", fontSize: "0.8rem" }}>CONTACT ENGINEERING</button></Link>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "2rem", color: "rgba(255,255,255,0.4)", fontSize: "0.7rem", fontFamily: "var(--font-inter)", marginTop: "1rem" }}>
-            <a href={`mailto:${BRAND.email}`} style={{ display: "flex", alignItems: "center", gap: "0.5rem", transition: "color 0.3s" }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#FFBF00"} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.4)"}>
-              <Mail size={14} style={{ color: "#FFBF00" }} />{BRAND.email}
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "2.5rem", color: "rgba(255,255,255,0.7)", fontSize: "0.95rem", fontWeight: 500, fontFamily: "var(--font-inter)", marginTop: "1.5rem" }}>
+            <a href={`mailto:${BRAND.email}`} style={{ display: "flex", alignItems: "center", gap: "0.5rem", transition: "color 0.3s" }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#FFBF00"} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.7)"}>
+              <Mail size={18} style={{ color: "#FFBF00" }} />{BRAND.email}
             </a>
-            <a href={`tel:${BRAND.phone}`} style={{ display: "flex", alignItems: "center", gap: "0.5rem", transition: "color 0.3s" }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#FFBF00"} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.4)"}>
-              <Phone size={14} style={{ color: "#FFBF00" }} />{BRAND.phone}
+            <a href={`tel:${BRAND.phone}`} style={{ display: "flex", alignItems: "center", gap: "0.5rem", transition: "color 0.3s" }} onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#FFBF00"} onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.7)"}>
+              <Phone size={18} style={{ color: "#FFBF00" }} />{BRAND.phone}
             </a>
           </div>
         </SectionReveal>
