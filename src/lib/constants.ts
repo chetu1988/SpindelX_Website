@@ -8,6 +8,7 @@ export const BRAND = {
   social: {
     instagram: "https://www.instagram.com/spindelx/",
     facebook: "https://www.facebook.com/profile.php?id=61591664144259",
+    youtube: "https://www.youtube.com/@SpindelX",
   },
 } as const;
 
