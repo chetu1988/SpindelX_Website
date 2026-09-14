@@ -15,6 +15,10 @@ export function Navbar() {
 
   useEffect(() => scrollY.on("change", v => setScrolled(v > 50)), [scrollY]);
   useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "unset";
+  }, [open]);
 
   const navStyle: React.CSSProperties = {
     position: "fixed", top: 0, left: 0, width: "100%", zIndex: 50,
@@ -26,7 +30,8 @@ export function Navbar() {
   };
 
   return (
-    <motion.nav style={navStyle} initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
+    <>
+      <motion.nav style={navStyle} initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
       <div className="container-xl flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
@@ -65,16 +70,17 @@ export function Navbar() {
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
+      </motion.nav>
 
       {/* Mobile drawer */}
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}
-            style={{ position: "fixed", inset: 0, top: 60, background: "rgba(31,56,85,0.98)", zIndex: 40, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "3rem 2rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+            style={{ position: "fixed", top: 60, left: 0, width: "100%", height: "calc(100vh - 60px)", backgroundColor: "#1F3855", zIndex: 9999, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "3rem 2rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
               {NAV_LINKS.map((link, i) => (
                 <motion.div key={link.href} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
-                  <Link href={link.href} style={{ fontSize: "1.75rem", fontFamily: "var(--font-manrope)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "-0.02em", color: pathname === link.href ? "#FFBF00" : "rgba(255,255,255,0.5)", transition: "color 0.3s" }}>
+                  <Link href={link.href} onClick={() => setOpen(false)} style={{ fontSize: "1.75rem", fontFamily: "var(--font-manrope)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "-0.02em", color: pathname === link.href ? "#FFBF00" : "rgba(255,255,255,0.5)", transition: "color 0.3s" }}>
                     {link.label}
                   </Link>
                 </motion.div>
@@ -82,13 +88,13 @@ export function Navbar() {
             </div>
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
               <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: "1.5rem" }} />
-              <Link href="/rfq" style={{ display: "block" }}>
+              <Link href="/rfq" onClick={() => setOpen(false)} style={{ display: "block" }}>
                 <button className="btn-primary" style={{ width: "100%", justifyContent: "center", padding: "1rem", fontSize: "0.75rem", letterSpacing: "0.15em" }}>REQUEST QUOTE</button>
               </Link>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   );
 }
