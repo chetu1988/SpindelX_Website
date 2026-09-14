@@ -6,9 +6,8 @@ export const BRAND = {
   phone: "+91 79755 25982",
   address: { street: "#235, JCK Industrial Park, Belagola Industrial Area", city: "Mysore", state: "Karnataka - 570016", country: "India" },
   social: {
-    linkedin: "https://linkedin.com/company/spindelx",
-    instagram: "https://instagram.com/spindelx",
-    youtube: "https://youtube.com/@spindelx",
+    instagram: "https://www.instagram.com/spindelx/",
+    facebook: "https://www.facebook.com/profile.php?id=61591664144259",
   },
 } as const;
 
